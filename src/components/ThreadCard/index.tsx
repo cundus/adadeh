@@ -1,13 +1,24 @@
 import { Box, Typography } from "@mui/material";
 import { IThread } from "../../types/app";
+import { useNavigate } from "react-router-dom";
 
 interface IThreadCardProps {
    thread: IThread;
 }
 
 const ThreadCard: React.FC<IThreadCardProps> = ({ thread }) => {
+   const navigate = useNavigate();
+
    return (
-      <Box borderBottom={"1px solid gray"} padding={"10px"} mb={1}>
+      <Box
+         borderBottom={"1px solid gray"}
+         padding={"10px"}
+         mb={1}
+         sx={{ cursor: "pointer" }}
+         onClick={() => {
+            navigate(`/detail/${thread.id}`);
+         }}
+      >
          <Typography variant="body1">{thread.content}</Typography>
          <Typography variant="body2" color="gray">
             {thread.author?.username}

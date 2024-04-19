@@ -24,7 +24,7 @@ const Home = () => {
    return (
       <div>
          <h1>home</h1>
-         <ThreadPost />
+         <ThreadPost callback={getThread} />
 
          {threads.map((thread) => (
             <ThreadCard key={thread.id} thread={thread} />

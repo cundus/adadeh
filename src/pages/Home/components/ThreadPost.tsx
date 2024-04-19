@@ -8,27 +8,44 @@ import {
 import React, { useState } from "react";
 import { createThread } from "../../../lib/api/call/thread";
 
-function srcset(image: string, size: number, rows = 1, cols = 1) {
-   return {
-      src: `${image}?w=${size * cols}&h=${size * rows}&fit=crop&auto=format`,
-      srcSet: `${image}?w=${size * cols}&h=${
-         size * rows
-      }&fit=crop&auto=format&dpr=2 2x`,
-   };
+// function srcset(image: string, size: number, rows = 1, cols = 1) {
+//    return {
+//       src: `${image}?w=${size * cols}&h=${size * rows}&fit=crop&auto=format`,
+//       srcSet: `${image}?w=${size * cols}&h=${
+//          size * rows
+//       }&fit=crop&auto=format&dpr=2 2x`,
+//    };
+// }
+
+interface IThreadPostProps {
+   threadId?: number;
+   callback?: () => void;
 }
-const ThreadPost = () => {
+
+const ThreadPost: React.FC<IThreadPostProps> = ({ threadId, callback }) => {
    const [threadPost, setThreadPost] = useState<{
       content: string;
       image: FileList | null;
+      threadId?: number;
    }>({ content: "", image: null });
 
    const handlePostThread = async (e: React.MouseEvent) => {
       try {
          e.preventDefault();
 
+         if (threadId) {
+            threadPost.threadId = threadId;
+         }
+
+         console.log(threadPost, threadId, callback);
+
          const res = await createThread(threadPost);
 
          console.log(res);
+
+         if (callback) {
+            await callback();
+         }
       } catch (error) {
          console.log(error);
       }

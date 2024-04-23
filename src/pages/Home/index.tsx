@@ -4,29 +4,23 @@ import { getThreads } from "../../lib/api/call/thread";
 import ThreadCard from "../../components/ThreadCard";
 import { Box, Button, TextField } from "@mui/material";
 import ThreadPost from "./components/ThreadPost";
+import { useAppDispatch, useAppSelector } from "../../store";
+import { getThreadAsync } from "../../store/async/thread";
 
 const Home = () => {
-   const [threads, setThreads] = useState<IThread[] | []>([]);
-
-   async function getThread() {
-      try {
-         const res = await getThreads();
-         setThreads(res.data.data);
-      } catch (error) {
-         console.log(error);
-      }
-   }
+   const { thread } = useAppSelector((state) => state);
+   const dispatch = useAppDispatch();
 
    useEffect(() => {
-      getThread();
+      dispatch(getThreadAsync());
    }, []);
 
    return (
       <div>
          <h1>home</h1>
-         <ThreadPost callback={getThread} />
+         <ThreadPost />
 
-         {threads.map((thread) => (
+         {thread.threads.map((thread) => (
             <ThreadCard key={thread.id} thread={thread} />
          ))}
       </div>

@@ -7,6 +7,8 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import { createThread } from "../../../lib/api/call/thread";
+import { useAppDispatch } from "../../../store";
+import { getThreadAsync } from "../../../store/async/thread";
 
 // function srcset(image: string, size: number, rows = 1, cols = 1) {
 //    return {
@@ -19,7 +21,7 @@ import { createThread } from "../../../lib/api/call/thread";
 
 interface IThreadPostProps {
    threadId?: number;
-   callback?: () => void;
+   callback?: () => Promise<void>;
 }
 
 const ThreadPost: React.FC<IThreadPostProps> = ({ threadId, callback }) => {
@@ -28,6 +30,7 @@ const ThreadPost: React.FC<IThreadPostProps> = ({ threadId, callback }) => {
       image: FileList | null;
       threadId?: number;
    }>({ content: "", image: null });
+   const dispatch = useAppDispatch();
 
    const handlePostThread = async (e: React.MouseEvent) => {
       try {
@@ -37,14 +40,12 @@ const ThreadPost: React.FC<IThreadPostProps> = ({ threadId, callback }) => {
             threadPost.threadId = threadId;
          }
 
-         console.log(threadPost, threadId, callback);
-
          const res = await createThread(threadPost);
-
-         console.log(res);
 
          if (callback) {
             await callback();
+         } else {
+            await dispatch(getThreadAsync());
          }
       } catch (error) {
          console.log(error);

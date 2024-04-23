@@ -4,8 +4,12 @@ import RootLayout from "./layouts/RootLayout";
 import Search from "./pages/Search";
 import Profile from "./pages/Profile";
 import DetailThread from "./pages/DetailThread";
+import { useAppSelector } from "./store";
 
 const App = () => {
+   const { auth } = useAppSelector((state) => state);
+   console.log(auth);
+
    return (
       <>
          <BrowserRouter>

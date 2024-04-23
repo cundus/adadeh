@@ -43,8 +43,8 @@ const ProfileCard = () => {
             <Button>Edit Profile</Button>
          </Box>
 
-         <Typography>{profile?.user.fullname}</Typography>
-         <Typography>@{profile?.user.username}</Typography>
+         <Typography>{profile?.user?.fullname}</Typography>
+         <Typography>@{profile?.user?.username}</Typography>
          <Typography>{profile?.bio}</Typography>
       </Box>
    );

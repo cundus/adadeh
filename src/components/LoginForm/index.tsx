@@ -2,8 +2,9 @@ import { Box, Button, TextField } from "@mui/material";
 import React from "react";
 import { loginApi } from "../../lib/api/call/user";
 import { getProfile } from "../../lib/api/call/profile";
-import { useAppDispatch } from "../../store";
+import { useAppDispatch, useAppSelector } from "../../store";
 import { SET_LOGIN } from "../../store/slice/auth";
+import { getProfileAsync, loginAsync } from "../../store/async/auth";
 
 interface ILoginFormProps {
    callback: () => void;
@@ -23,11 +24,12 @@ const LoginForm: React.FC<ILoginFormProps> = ({ callback }) => {
    const handleLogin = async (e: React.FormEvent) => {
       e.preventDefault();
       try {
-         const res = await loginApi(formInput);
-         const token = res.data.data;
-         const resProfile = await getProfile(token);
-         localStorage.setItem("token", token);
-         dispatch(SET_LOGIN({ user: resProfile.data.data, token }));
+         const token = (await dispatch(loginAsync(formInput))).payload;
+
+         console.log("token before get profile", token);
+
+         await dispatch(getProfileAsync(token));
+
          callback();
       } catch (error) {
          console.log(error);

@@ -20,7 +20,7 @@ const Home = () => {
          <h1>home</h1>
          <ThreadPost />
 
-         {thread.threads.map((thread) => (
+         {thread?.threads?.map((thread) => (
             <ThreadCard key={thread.id} thread={thread} />
          ))}
       </div>

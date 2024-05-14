@@ -1,10 +1,16 @@
 export interface IThread {
    id?: number;
    content?: string;
-   image?: IThread[];
+   image?: IThreadImage[];
    userId: number;
    threadId?: number;
    author?: IUser;
+   _count: ICount;
+}
+
+interface ICount {
+   like: number;
+   replies: number;
 }
 
 interface IThreadImage {

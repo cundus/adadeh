@@ -43,7 +43,10 @@ const ThreadCard: React.FC<IThreadCardProps> = ({ thread }) => {
                   ))}
             </Box>
          </Box>
-         <LikeButton threadId={thread.id as number} />
+         <LikeButton
+            threadId={thread.id as number}
+            totalLike={thread._count.like}
+         />
       </Box>
    );
 };

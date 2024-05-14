@@ -1,4 +1,4 @@
-import { IconButton } from "@mui/material";
+import { Box, IconButton, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { useAppSelector } from "../../store";
@@ -6,11 +6,13 @@ import API from "../../lib/api";
 
 interface ILikeButtonProps {
    threadId: number;
+   totalLike: number;
 }
 
 const LikeButton: React.FC<ILikeButtonProps> = ({ threadId }) => {
    const { user } = useAppSelector((state) => state.auth);
    const [liked, setliked] = useState(false);
+   const [totalLike, setTotalLike] = useState(0);
 
    const getLike = async () => {
       try {
@@ -20,7 +22,8 @@ const LikeButton: React.FC<ILikeButtonProps> = ({ threadId }) => {
             },
          });
 
-         setliked(res.data.data.like === null ? false : true);
+         setliked(res.data.like === null ? false : true);
+         setTotalLike(res.data.totalLike);
       } catch (error) {
          console.log(error);
       }
@@ -52,9 +55,12 @@ const LikeButton: React.FC<ILikeButtonProps> = ({ threadId }) => {
    }, []);
 
    return (
-      <IconButton aria-label="delete" onClick={() => handleLike()}>
-         <FavoriteIcon sx={{ color: liked ? "red" : "gray" }} />
-      </IconButton>
+      <Box sx={{ display: "flex", gap: 1 }}>
+         <IconButton aria-label="delete" onClick={() => handleLike()}>
+            <FavoriteIcon sx={{ color: liked ? "red" : "gray" }} />
+         </IconButton>
+         <Typography>{totalLike}</Typography>
+      </Box>
    );
 };
 

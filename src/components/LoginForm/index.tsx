@@ -5,6 +5,11 @@ import { getProfile } from "../../lib/api/call/profile";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { SET_LOGIN } from "../../store/slice/auth";
 import { getProfileAsync, loginAsync } from "../../store/async/auth";
+import { Controller, SubmitErrorHandler, SubmitHandler } from "react-hook-form";
+import {
+   IFormInput,
+   useLoginValidation,
+} from "../../lib/validation/useLoginValidation";
 
 interface ILoginFormProps {
    callback: () => void;
@@ -12,6 +17,7 @@ interface ILoginFormProps {
 
 const LoginForm: React.FC<ILoginFormProps> = ({ callback }) => {
    const dispatch = useAppDispatch();
+   const { control, reset, handleSubmit } = useLoginValidation();
 
    const [formInput, setFormInput] = React.useState<{
       username: string;
@@ -21,10 +27,9 @@ const LoginForm: React.FC<ILoginFormProps> = ({ callback }) => {
       password: "",
    });
 
-   const handleLogin = async (e: React.FormEvent) => {
-      e.preventDefault();
+   const handleLogin: SubmitHandler<IFormInput> = async (data) => {
       try {
-         const token = (await dispatch(loginAsync(formInput))).payload;
+         const token = (await dispatch(loginAsync(data))).payload;
 
          console.log("token before get profile", token);
 
@@ -36,28 +41,47 @@ const LoginForm: React.FC<ILoginFormProps> = ({ callback }) => {
       }
    };
 
+   const errorCatcher: SubmitErrorHandler<IFormInput> = (data) => {
+      console.log("ERROR", JSON.stringify(data, null, 2));
+   };
+
    return (
       <Box sx={{}}>
-         <form onSubmit={handleLogin}>
+         <form onSubmit={handleSubmit(handleLogin, errorCatcher)}>
             <Box display={"flex"} flexDirection={"column"}>
-               <TextField
-                  label="Email or Username"
-                  value={formInput.username}
-                  onChange={(e) =>
-                     setFormInput({ ...formInput, username: e.target.value })
-                  }
-                  sx={{
-                     marginBottom: "10px",
-                  }}
+               <Controller
+                  control={control}
+                  name="username"
+                  render={({ field, fieldState }) => (
+                     <TextField
+                        label="Email or Username"
+                        sx={{
+                           marginBottom: "10px",
+                        }}
+                        {...field}
+                        error={!!fieldState.error?.message}
+                        helperText={fieldState.error?.message}
+                     />
+                  )}
                />
-               <TextField
-                  label="Password"
-                  type="password"
-                  value={formInput.password}
-                  onChange={(e) =>
-                     setFormInput({ ...formInput, password: e.target.value })
-                  }
+
+               <Controller
+                  control={control}
+                  name="password"
+                  render={({ field, fieldState }) => (
+                     <TextField
+                        label="Password"
+                        type="password"
+                        sx={{
+                           marginBottom: "10px",
+                        }}
+                        {...field}
+                        error={!!fieldState.error?.message}
+                        helperText={fieldState.error?.message}
+                     />
+                  )}
                />
+
                <Button type="submit">Login</Button>
             </Box>
          </form>
